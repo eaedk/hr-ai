@@ -1,0 +1,11 @@
+PyPDF2
+python-dotenv
+openai
+ollama
+instructor
+moviepy
+librosa
+textblob
+openai-whisper
+pydub
+gradio
