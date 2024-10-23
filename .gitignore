@@ -1,0 +1,7 @@
+.env
+.venv/
+data/
+**cache**
+private/
+*.wav
+*.mp4
