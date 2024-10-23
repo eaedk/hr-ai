@@ -92,7 +92,7 @@ Look at how the repository is structured.
 ```plaintext
 .
 ├── .env # to be created after cloning the repo
-├── README_gradio.md
+├── README.md
 ├── app.py
 ├── img
 │   ├── app_interface.png
