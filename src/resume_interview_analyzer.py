@@ -9,7 +9,9 @@ import librosa
 import logging
 import numpy as np
 from pydub import AudioSegment
-import whisper
+import whisper, mlx_whisper # For exploring more models : https://huggingface.co/collections/mlx-community/whisper-663256f9964fbb1177db93dc 
+import torch
+from typing import Literal
 from textblob import TextBlob
 from src.structured_resume import CandidateProfile
 
@@ -251,10 +253,31 @@ class VideoProcessor:
         rms = librosa.feature.rms(y=y)
         return float(np.mean(rms))
 
-    # Function to transcribe audio to text
-    def transcribe_audio(self, audio_filepath, model_name="turbo"):
+    # # Function to transcribe audio to text
+    # def transcribe_audio(self, audio_filepath, model_name="turbo"):
+    #     """
+    #     Transcribe audio into text using the Whisper model.
+
+    #     Parameters:
+    #     audio_filepath (str): Path to the audio file.
+    #     model_name (str): Name of the audio transcription model.
+
+    #     Returns:
+    #     str: Transcribed text.
+    #     """
+    #     logging.info(f"Transcribing audio file: {audio_filepath}.")
+    #     model = whisper.load_model(model_name)
+    #     result = model.transcribe(audio_filepath)
+
+    #     logging.info(f"Audio file transcribed.")
+
+    #     transcription = result['text']
+    #     return transcription
+
+    # Method to transcribe audio to text
+    def transcribe_audio(self, audio_filepath, model_name: Literal["tiny", "turbo", "large"] = "tiny"):
         """
-        Transcribe audio into text using the Whisper model.
+        Transcribe audio into text using the Whisper model leveraging your device.
 
         Parameters:
         audio_filepath (str): Path to the audio file.
@@ -263,11 +286,22 @@ class VideoProcessor:
         Returns:
         str: Transcribed text.
         """
-        logging.info(f"Transcribing audio file: {audio_filepath}.")
-        model = whisper.load_model(model_name)
-        result = model.transcribe(audio_filepath)
+        device = None
 
-        logging.info(f"Audio file transcribed.")
+        logging.info(f"Transcribing audio file: {audio_filepath}.")
+        if torch.backends.mps.is_available():
+            device = torch.device("mps")
+            
+            result = mlx_whisper.transcribe(audio=audio_filepath,
+                                            path_or_hf_repo=f"mlx-community/whisper-{model_name}", )
+        else:
+            if torch.cuda.is_available():
+                device = torch.device("cuda")
+                
+            model = whisper.load_model(model_name, device=device)
+            result = model.transcribe(audio_filepath)
+        
+        logging.info(f"Audio file transcribed on-device using {device} capabilities.")
 
         transcription = result['text']
         return transcription
