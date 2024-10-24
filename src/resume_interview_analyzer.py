@@ -76,7 +76,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class VideoProcessor:
-    def __init__(self, video_path, output_folder=None, noise_factor=1.0, min_pause_duration=0.3, model_name="turbo"):
+    def __init__(self, video_path, output_folder=None, noise_factor=1.0, min_pause_duration=0.3, model_name: Literal["tiny", "turbo", "large"] = "tiny"):
         """
         Initialize the VideoProcessor class with the video path and optional output folder.
         
