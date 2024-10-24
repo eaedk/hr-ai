@@ -267,7 +267,7 @@ class VideoProcessor:
         model = whisper.load_model(model_name)
         result = model.transcribe(audio_filepath)
 
-        logging.info(f"Audio file transcribe.")
+        logging.info(f"Audio file transcribed.")
 
         transcription = result['text']
         return transcription
