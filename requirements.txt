@@ -7,5 +7,6 @@ moviepy
 librosa
 textblob
 openai-whisper
+mlx_whisper 
 pydub
 gradio
